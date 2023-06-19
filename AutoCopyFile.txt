@@ -1,0 +1,4 @@
+----------------Auto Copy File From Server----------------------
+
+for /f "delims=" %%i in ('dir /b /a-d /od "\\192.168.0.1\New folder\test\*.bak"') do set "LatestModifiedFile=%%~i"
+copy "\\192.168.0.1\New folder\test\%LatestModifiedFile%" "D:\FolderA\FolderB\FolderC"

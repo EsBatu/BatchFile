@@ -1,0 +1,38 @@
+----------------Auto Backup Database Server----------------------
+
+::Set sql directory app
+set mysqlDataDir="D:\FolderA\FolderB\FolderC"
+::Set Backup directory 
+set backupDir="D:\FolderA\FolderB\FolderC"
+
+for /f "delims=" %%a in ('wmic OS Get localdatetime ^| find "."') do set DateTime=%%a
+::Get Date
+set Yr=%DateTime:~0,4%
+set Mon=%DateTime:~4,2%
+set Day=%DateTime:~6,2%
+::Get Time
+set Hr=%DateTime:~8,2%
+set Min=%DateTime:~10,2%
+set Sec=%DateTime:~12,2%
+
+set dirName=%Day%_%Mon%_%Yr%
+set fileSuffix=%Day%-%Mon%-%Yr%
+
+echo "dirName"="%dirName%"
+
+:: switch to the "data" folder
+pushd "%mysqlDataDir%"
+
+:: create backup folder if it doesn't exist
+if not exist %backupDir%\%dirName%\   mkdir %backupDir%\%dirName%
+
+:: iterate over the folder structure in the "data" folder to get the databases
+for /d %%f in (*) do (
+	echo processing folder "%%f"
+	::database login & mysql.exe directory
+	D:\ProgramFile\Xampp\mysql\bin\mysqldump.exe --host="192.168.0.2" --user=admin --password=123456 --single-transaction --quick --lock-tables=false --add-drop-table sap > %backupDir%\%%f.sql
+	rd "%backupDir%\%dirName%"
+)
+
+
+
